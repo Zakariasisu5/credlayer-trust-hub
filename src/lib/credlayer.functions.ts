@@ -94,13 +94,14 @@ export const analyzeWallet = createServerFn({ method: "POST" })
       heuristicFlags.push("Newly created wallet");
 
     // AI layer
-    let aiOutput: {
+    type AiOutput = {
       ai_insights: string[];
       suspicious_flags: string[];
       risk_predictions: { label: string; probability: number }[];
       adjusted_score?: number;
       confidence: number;
-    } | null = null;
+    };
+    let aiOutput: AiOutput | null = null;
 
     const apiKey = process.env.LOVABLE_API_KEY;
     if (apiKey) {
