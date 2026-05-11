@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
+import { Route as DashboardSettingsRouteImport } from './routes/dashboard.settings'
 import { Route as DashboardLeaderboardRouteImport } from './routes/dashboard.leaderboard'
 import { Route as DashboardIntelligenceRouteImport } from './routes/dashboard.intelligence'
 import { Route as DashboardDeveloperRouteImport } from './routes/dashboard.developer'
@@ -30,6 +31,11 @@ const IndexRoute = IndexRouteImport.update({
 const DashboardIndexRoute = DashboardIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardSettingsRoute = DashboardSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => DashboardRoute,
 } as any)
 const DashboardLeaderboardRoute = DashboardLeaderboardRouteImport.update({
@@ -60,6 +66,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/developer': typeof DashboardDeveloperRoute
   '/dashboard/intelligence': typeof DashboardIntelligenceRoute
   '/dashboard/leaderboard': typeof DashboardLeaderboardRoute
+  '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard/': typeof DashboardIndexRoute
 }
 export interface FileRoutesByTo {
@@ -68,6 +75,7 @@ export interface FileRoutesByTo {
   '/dashboard/developer': typeof DashboardDeveloperRoute
   '/dashboard/intelligence': typeof DashboardIntelligenceRoute
   '/dashboard/leaderboard': typeof DashboardLeaderboardRoute
+  '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard': typeof DashboardIndexRoute
 }
 export interface FileRoutesById {
@@ -78,6 +86,7 @@ export interface FileRoutesById {
   '/dashboard/developer': typeof DashboardDeveloperRoute
   '/dashboard/intelligence': typeof DashboardIntelligenceRoute
   '/dashboard/leaderboard': typeof DashboardLeaderboardRoute
+  '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard/': typeof DashboardIndexRoute
 }
 export interface FileRouteTypes {
@@ -89,6 +98,7 @@ export interface FileRouteTypes {
     | '/dashboard/developer'
     | '/dashboard/intelligence'
     | '/dashboard/leaderboard'
+    | '/dashboard/settings'
     | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -97,6 +107,7 @@ export interface FileRouteTypes {
     | '/dashboard/developer'
     | '/dashboard/intelligence'
     | '/dashboard/leaderboard'
+    | '/dashboard/settings'
     | '/dashboard'
   id:
     | '__root__'
@@ -106,6 +117,7 @@ export interface FileRouteTypes {
     | '/dashboard/developer'
     | '/dashboard/intelligence'
     | '/dashboard/leaderboard'
+    | '/dashboard/settings'
     | '/dashboard/'
   fileRoutesById: FileRoutesById
 }
@@ -135,6 +147,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/dashboard/'
       preLoaderRoute: typeof DashboardIndexRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/settings': {
+      id: '/dashboard/settings'
+      path: '/settings'
+      fullPath: '/dashboard/settings'
+      preLoaderRoute: typeof DashboardSettingsRouteImport
       parentRoute: typeof DashboardRoute
     }
     '/dashboard/leaderboard': {
@@ -173,6 +192,7 @@ interface DashboardRouteChildren {
   DashboardDeveloperRoute: typeof DashboardDeveloperRoute
   DashboardIntelligenceRoute: typeof DashboardIntelligenceRoute
   DashboardLeaderboardRoute: typeof DashboardLeaderboardRoute
+  DashboardSettingsRoute: typeof DashboardSettingsRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
 }
 
@@ -181,6 +201,7 @@ const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardDeveloperRoute: DashboardDeveloperRoute,
   DashboardIntelligenceRoute: DashboardIntelligenceRoute,
   DashboardLeaderboardRoute: DashboardLeaderboardRoute,
+  DashboardSettingsRoute: DashboardSettingsRoute,
   DashboardIndexRoute: DashboardIndexRoute,
 }
 
@@ -195,3 +216,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

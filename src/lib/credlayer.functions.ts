@@ -133,7 +133,7 @@ Provide 3-5 insights, sybil/risk flags if any (empty array if none), 3 risk pred
             }),
           }),
         });
-        aiOutput = output as typeof aiOutput;
+        aiOutput = output as AiOutput;
       } catch (err) {
         console.error("AI analysis failed:", err);
       }
