@@ -9,38 +9,132 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
+import { Route as DashboardSettingsRouteImport } from './routes/dashboard.settings'
+import { Route as DashboardLeaderboardRouteImport } from './routes/dashboard.leaderboard'
+import { Route as DashboardIntelligenceRouteImport } from './routes/dashboard.intelligence'
+import { Route as DashboardDeveloperRouteImport } from './routes/dashboard.developer'
+import { Route as DashboardAnalyzerRouteImport } from './routes/dashboard.analyzer'
 
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardIndexRoute = DashboardIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardSettingsRoute = DashboardSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardLeaderboardRoute = DashboardLeaderboardRouteImport.update({
+  id: '/leaderboard',
+  path: '/leaderboard',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardIntelligenceRoute = DashboardIntelligenceRouteImport.update({
+  id: '/intelligence',
+  path: '/intelligence',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardDeveloperRoute = DashboardDeveloperRouteImport.update({
+  id: '/developer',
+  path: '/developer',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardAnalyzerRoute = DashboardAnalyzerRouteImport.update({
+  id: '/analyzer',
+  path: '/analyzer',
+  getParentRoute: () => DashboardRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRouteWithChildren
+  '/dashboard/analyzer': typeof DashboardAnalyzerRoute
+  '/dashboard/developer': typeof DashboardDeveloperRoute
+  '/dashboard/intelligence': typeof DashboardIntelligenceRoute
+  '/dashboard/leaderboard': typeof DashboardLeaderboardRoute
+  '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard/': typeof DashboardIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/dashboard/analyzer': typeof DashboardAnalyzerRoute
+  '/dashboard/developer': typeof DashboardDeveloperRoute
+  '/dashboard/intelligence': typeof DashboardIntelligenceRoute
+  '/dashboard/leaderboard': typeof DashboardLeaderboardRoute
+  '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard': typeof DashboardIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRouteWithChildren
+  '/dashboard/analyzer': typeof DashboardAnalyzerRoute
+  '/dashboard/developer': typeof DashboardDeveloperRoute
+  '/dashboard/intelligence': typeof DashboardIntelligenceRoute
+  '/dashboard/leaderboard': typeof DashboardLeaderboardRoute
+  '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard/': typeof DashboardIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/dashboard'
+    | '/dashboard/analyzer'
+    | '/dashboard/developer'
+    | '/dashboard/intelligence'
+    | '/dashboard/leaderboard'
+    | '/dashboard/settings'
+    | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/dashboard/analyzer'
+    | '/dashboard/developer'
+    | '/dashboard/intelligence'
+    | '/dashboard/leaderboard'
+    | '/dashboard/settings'
+    | '/dashboard'
+  id:
+    | '__root__'
+    | '/'
+    | '/dashboard'
+    | '/dashboard/analyzer'
+    | '/dashboard/developer'
+    | '/dashboard/intelligence'
+    | '/dashboard/leaderboard'
+    | '/dashboard/settings'
+    | '/dashboard/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DashboardRoute: typeof DashboardRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +142,76 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/': {
+      id: '/dashboard/'
+      path: '/'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof DashboardIndexRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/settings': {
+      id: '/dashboard/settings'
+      path: '/settings'
+      fullPath: '/dashboard/settings'
+      preLoaderRoute: typeof DashboardSettingsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/leaderboard': {
+      id: '/dashboard/leaderboard'
+      path: '/leaderboard'
+      fullPath: '/dashboard/leaderboard'
+      preLoaderRoute: typeof DashboardLeaderboardRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/intelligence': {
+      id: '/dashboard/intelligence'
+      path: '/intelligence'
+      fullPath: '/dashboard/intelligence'
+      preLoaderRoute: typeof DashboardIntelligenceRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/developer': {
+      id: '/dashboard/developer'
+      path: '/developer'
+      fullPath: '/dashboard/developer'
+      preLoaderRoute: typeof DashboardDeveloperRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/analyzer': {
+      id: '/dashboard/analyzer'
+      path: '/analyzer'
+      fullPath: '/dashboard/analyzer'
+      preLoaderRoute: typeof DashboardAnalyzerRouteImport
+      parentRoute: typeof DashboardRoute
+    }
   }
 }
 
+interface DashboardRouteChildren {
+  DashboardAnalyzerRoute: typeof DashboardAnalyzerRoute
+  DashboardDeveloperRoute: typeof DashboardDeveloperRoute
+  DashboardIntelligenceRoute: typeof DashboardIntelligenceRoute
+  DashboardLeaderboardRoute: typeof DashboardLeaderboardRoute
+  DashboardSettingsRoute: typeof DashboardSettingsRoute
+  DashboardIndexRoute: typeof DashboardIndexRoute
+}
+
+const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardAnalyzerRoute: DashboardAnalyzerRoute,
+  DashboardDeveloperRoute: DashboardDeveloperRoute,
+  DashboardIntelligenceRoute: DashboardIntelligenceRoute,
+  DashboardLeaderboardRoute: DashboardLeaderboardRoute,
+  DashboardSettingsRoute: DashboardSettingsRoute,
+  DashboardIndexRoute: DashboardIndexRoute,
+}
+
+const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
+  DashboardRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DashboardRoute: DashboardRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

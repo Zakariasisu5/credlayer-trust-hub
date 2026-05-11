@@ -14,7 +14,111 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      api_keys: {
+        Row: {
+          created_at: string
+          id: string
+          key_hash: string
+          key_prefix: string
+          last_used_at: string | null
+          name: string
+          owner_wallet: string
+          request_count: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          key_hash: string
+          key_prefix: string
+          last_used_at?: string | null
+          name: string
+          owner_wallet: string
+          request_count?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          key_hash?: string
+          key_prefix?: string
+          last_used_at?: string | null
+          name?: string
+          owner_wallet?: string
+          request_count?: number
+        }
+        Relationships: []
+      }
+      user_settings: {
+        Row: {
+          notify_alerts: boolean
+          notify_score_changes: boolean
+          theme: string
+          updated_at: string
+          wallet_address: string
+        }
+        Insert: {
+          notify_alerts?: boolean
+          notify_score_changes?: boolean
+          theme?: string
+          updated_at?: string
+          wallet_address: string
+        }
+        Update: {
+          notify_alerts?: boolean
+          notify_score_changes?: boolean
+          theme?: string
+          updated_at?: string
+          wallet_address?: string
+        }
+        Relationships: []
+      }
+      wallet_analyses: {
+        Row: {
+          ai_insights: Json
+          analytics: Json
+          behavioral_metrics: Json
+          confidence: number
+          created_at: string
+          recent_activity: Json
+          reputation_history: Json
+          risk_level: string
+          risk_predictions: Json
+          suspicious_flags: Json
+          trust_score: number
+          updated_at: string
+          wallet_address: string
+        }
+        Insert: {
+          ai_insights?: Json
+          analytics?: Json
+          behavioral_metrics?: Json
+          confidence?: number
+          created_at?: string
+          recent_activity?: Json
+          reputation_history?: Json
+          risk_level: string
+          risk_predictions?: Json
+          suspicious_flags?: Json
+          trust_score: number
+          updated_at?: string
+          wallet_address: string
+        }
+        Update: {
+          ai_insights?: Json
+          analytics?: Json
+          behavioral_metrics?: Json
+          confidence?: number
+          created_at?: string
+          recent_activity?: Json
+          reputation_history?: Json
+          risk_level?: string
+          risk_predictions?: Json
+          suspicious_flags?: Json
+          trust_score?: number
+          updated_at?: string
+          wallet_address?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
