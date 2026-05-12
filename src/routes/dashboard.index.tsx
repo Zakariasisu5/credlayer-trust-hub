@@ -50,6 +50,7 @@ function DashboardHome() {
           Analyzing {shortAddress(address, 6)}
         </p>
       </div>
+      <OnChainReputationCard />
       <AnalysisView
         data={query.data}
         loading={query.isLoading}
