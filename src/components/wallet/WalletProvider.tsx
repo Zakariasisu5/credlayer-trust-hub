@@ -20,7 +20,7 @@ export function CredLayerWalletProvider({ children }: { children: ReactNode }) {
   const wallets = useMemo(
     () => [
       new PhantomWalletAdapter(),
-      new SolflareWalletAdapter({ network: SOLANA_NETWORK as "devnet" | "mainnet-beta" | "testnet" }),
+      new SolflareWalletAdapter(),
       new BackpackWalletAdapter(),
     ],
     []
