@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { analyzeWallet } from "@/lib/credlayer.functions";
 import { AnalysisView } from "@/components/credlayer/AnalysisView";
+import { OnChainReputationCard } from "@/components/credlayer/OnChainReputationCard";
 import { useEffect } from "react";
 import { toast } from "sonner";
 import { shortAddress } from "@/components/wallet/ConnectWalletButton";
