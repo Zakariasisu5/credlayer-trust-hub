@@ -1,7 +1,11 @@
-{
+﻿{
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "credlayer0",
   "compatibility_date": "2025-09-24",
   "compatibility_flags": ["nodejs_compat"],
   "main": "src/server.ts",
+  "alias": {
+    "tanstack-start-manifest:v": "./node_modules/@tanstack/start/dist/esm/runtime/manifest.js",
+    "tanstack-start-injected-head-scripts:v": "./node_modules/@tanstack/start/dist/esm/runtime/head-scripts.js"
+  }
 }
