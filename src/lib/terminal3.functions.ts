@@ -80,9 +80,11 @@ export const listPermissions = createServerFn({ method: "POST" })
       .select("*")
       .eq("wallet_address", data.wallet);
 
+    console.log(`[listPermissions] Found ${rows?.length ?? 0} permissions for wallet ${data.wallet.slice(0, 8)}...`);
+    
     // Merge with defaults so brand-new wallets see the catalog
     const byKey = new Map((rows ?? []).map((r: any) => [r.permission_key, r]));
-    return DEFAULT_PERMISSIONS.map((p) => {
+    const result = DEFAULT_PERMISSIONS.map((p) => {
       const existing = byKey.get(p.key);
       
       // A permission is truly granted only if:
@@ -92,6 +94,10 @@ export const listPermissions = createServerFn({ method: "POST" })
       const isGranted = existing?.granted === true 
         && !existing?.revoked_at 
         && (!existing?.expires_at || new Date(existing.expires_at).getTime() > Date.now());
+      
+      if (existing) {
+        console.log(`[listPermissions] ${p.key}: granted=${existing.granted}, revoked_at=${existing.revoked_at}, expires_at=${existing.expires_at}, computed isGranted=${isGranted}`);
+      }
       
       return {
         permission_key: p.key,
@@ -104,6 +110,8 @@ export const listPermissions = createServerFn({ method: "POST" })
         updated_at: existing?.updated_at ?? null,
       };
     });
+    
+    return result;
   });
 
 export const setPermission = createServerFn({ method: "POST" })
