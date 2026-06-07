@@ -88,8 +88,16 @@ function PermissionsPage() {
                 </div>
                 <Switch
                   checked={p.granted}
-                  disabled={p.scope === "restricted" || m.isPending}
-                  onCheckedChange={(v) => m.mutate({ key: p.permission_key, granted: v })}
+                  disabled={m.isPending}
+                  onCheckedChange={(v) => {
+                    if (p.scope === "restricted" && v) {
+                      toast.error("Cannot enable restricted permissions", { 
+                        description: "Restricted permissions require per-transaction signed approval" 
+                      });
+                      return;
+                    }
+                    m.mutate({ key: p.permission_key, granted: v });
+                  }}
                 />
               </div>
             </CardHeader>
