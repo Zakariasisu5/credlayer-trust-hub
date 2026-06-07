@@ -1,0 +1,148 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--destructive);
+  --color-electric: var(--electric);
+  --color-gold: var(--gold);
+}
+
+/* CredLayer dark Web3 theme — dark blue base, electric blue accents, yellow CTAs */
+:root {
+  --radius: 0.75rem;
+  /* Dark navy backgrounds */
+  --background: oklch(0.16 0.04 260);
+  --foreground: oklch(0.97 0.01 250);
+  --card: oklch(0.21 0.045 260);
+  --card-foreground: oklch(0.97 0.01 250);
+  --popover: oklch(0.21 0.045 260);
+  --popover-foreground: oklch(0.97 0.01 250);
+  /* Yellow primary (all buttons) */
+  --primary: oklch(0.84 0.17 92);
+  --primary-foreground: oklch(0.18 0.04 260);
+  /* Subtle secondary surface */
+  --secondary: oklch(0.26 0.045 260);
+  --secondary-foreground: oklch(0.97 0.01 250);
+  --muted: oklch(0.24 0.04 260);
+  --muted-foreground: oklch(0.7 0.03 250);
+  --accent: oklch(0.28 0.06 255);
+  --accent-foreground: oklch(0.97 0.01 250);
+  --destructive: oklch(0.62 0.22 25);
+  --destructive-foreground: oklch(0.98 0.01 250);
+  --border: oklch(0.3 0.04 260);
+  --input: oklch(0.26 0.04 260);
+  --ring: oklch(0.7 0.18 240);
+  /* Status */
+  --success: oklch(0.72 0.18 150);
+  --warning: oklch(0.82 0.17 80);
+  --electric: oklch(0.72 0.2 240);
+  --gold: oklch(0.84 0.17 92);
+  /* Charts (single consistent electric blue for behavioral bars) */
+  --chart-1: oklch(0.72 0.2 240);
+  --chart-2: oklch(0.72 0.18 150);
+  --chart-3: oklch(0.84 0.17 92);
+  --chart-4: oklch(0.62 0.22 25);
+  --chart-5: oklch(0.6 0.12 220);
+  /* Sidebar */
+  --sidebar: oklch(0.18 0.04 260);
+  --sidebar-foreground: oklch(0.95 0.01 250);
+  --sidebar-primary: oklch(0.84 0.17 92);
+  --sidebar-primary-foreground: oklch(0.18 0.04 260);
+  --sidebar-accent: oklch(0.26 0.045 260);
+  --sidebar-accent-foreground: oklch(0.97 0.01 250);
+  --sidebar-border: oklch(0.28 0.04 260);
+  --sidebar-ring: oklch(0.7 0.18 240);
+
+  --gradient-hero: radial-gradient(ellipse at top, oklch(0.28 0.1 250 / 0.6), transparent 60%),
+    linear-gradient(180deg, oklch(0.16 0.04 260) 0%, oklch(0.13 0.04 260) 100%);
+  --gradient-gold: linear-gradient(135deg, oklch(0.86 0.17 92) 0%, oklch(0.78 0.16 70) 100%);
+  --gradient-electric: linear-gradient(135deg, oklch(0.72 0.2 240) 0%, oklch(0.55 0.22 265) 100%);
+  --shadow-glow: 0 0 40px oklch(0.72 0.2 240 / 0.25);
+  --shadow-gold: 0 8px 24px oklch(0.84 0.17 92 / 0.25);
+}
+
+.dark {
+  /* Same — app is dark-only */
+  --background: oklch(0.16 0.04 260);
+  --foreground: oklch(0.97 0.01 250);
+}
+
+@layer base {
+  * { border-color: var(--color-border); }
+  html, body { background-color: var(--color-background); color: var(--color-foreground); }
+  body {
+    font-feature-settings: "cv11", "ss01";
+    background-image:
+      radial-gradient(circle at 15% 0%, oklch(0.72 0.2 240 / 0.08), transparent 40%),
+      radial-gradient(circle at 85% 30%, oklch(0.84 0.17 92 / 0.05), transparent 50%);
+    background-attachment: fixed;
+  }
+}
+
+@layer components {
+  .credlayer-grid-bg {
+    background-image:
+      linear-gradient(oklch(0.3 0.04 260 / 0.4) 1px, transparent 1px),
+      linear-gradient(90deg, oklch(0.3 0.04 260 / 0.4) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+  }
+  .glass-card {
+    background: linear-gradient(180deg, oklch(0.22 0.045 260 / 0.7), oklch(0.18 0.04 260 / 0.7));
+    backdrop-filter: blur(12px);
+    border: 1px solid oklch(0.3 0.04 260);
+  }
+  .text-gradient-gold {
+    background: var(--gradient-gold);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .text-gradient-electric {
+    background: var(--gradient-electric);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+}
