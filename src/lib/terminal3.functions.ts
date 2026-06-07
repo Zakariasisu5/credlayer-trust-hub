@@ -84,12 +84,21 @@ export const listPermissions = createServerFn({ method: "POST" })
     const byKey = new Map((rows ?? []).map((r: any) => [r.permission_key, r]));
     return DEFAULT_PERMISSIONS.map((p) => {
       const existing = byKey.get(p.key);
+      
+      // A permission is truly granted only if:
+      // 1. granted field is true
+      // 2. Not revoked (revoked_at is null)
+      // 3. Not expired (expires_at is null or in the future)
+      const isGranted = existing?.granted === true 
+        && !existing?.revoked_at 
+        && (!existing?.expires_at || new Date(existing.expires_at).getTime() > Date.now());
+      
       return {
         permission_key: p.key,
         label: p.label,
         description: p.description,
         scope: p.scope,
-        granted: existing?.granted ?? false,
+        granted: isGranted,
         expires_at: existing?.expires_at ?? null,
         revoked_at: existing?.revoked_at ?? null,
         updated_at: existing?.updated_at ?? null,
@@ -125,7 +134,7 @@ export const setPermission = createServerFn({ method: "POST" })
       ? new Date(Date.now() + data.expires_in_days * 86400_000).toISOString()
       : null;
 
-    await supabase.from("agent_permissions").upsert(
+    const { error } = await supabase.from("agent_permissions").upsert(
       {
         wallet_address: data.wallet,
         permission_key: data.permission_key,
@@ -139,6 +148,12 @@ export const setPermission = createServerFn({ method: "POST" })
       },
       { onConflict: "wallet_address,permission_key" }
     );
+    
+    if (error) {
+      console.error("Failed to update permission:", error);
+      throw new Error(`Failed to update permission: ${error.message}`);
+    }
+    
     await logActivity({
       wallet: data.wallet,
       action: data.granted ? "permission.grant" : "permission.revoke",
@@ -196,11 +211,17 @@ export const issueCredential = createServerFn({ method: "POST" })
     // Require credential.issue permission to be granted
     const { data: perm } = await supabase
       .from("agent_permissions")
-      .select("granted,revoked_at")
+      .select("granted,revoked_at,expires_at")
       .eq("wallet_address", data.wallet)
       .eq("permission_key", "credential.issue")
       .maybeSingle();
-    if (!perm?.granted || perm.revoked_at) {
+    
+    // Check if permission is truly granted (not revoked and not expired)
+    const isGranted = perm?.granted === true 
+      && !perm?.revoked_at 
+      && (!perm?.expires_at || new Date(perm.expires_at).getTime() > Date.now());
+    
+    if (!isGranted) {
       throw new Error("Permission 'Issue verifiable credentials' is not granted");
     }
 

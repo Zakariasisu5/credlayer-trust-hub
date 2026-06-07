@@ -35,11 +35,37 @@ function PermissionsPage() {
   const m = useMutation({
     mutationFn: (vars: { key: string; granted: boolean }) =>
       set({ data: { wallet, permission_key: vars.key, granted: vars.granted, expires_in_days: vars.granted ? 30 : null } }),
-    onSuccess: () => {
-      toast.success("Permission updated");
-      qc.invalidateQueries({ queryKey: ["permissions", wallet] });
+    onMutate: async (variables) => {
+      // Cancel any outgoing refetches
+      await qc.cancelQueries({ queryKey: ["permissions", wallet] });
+      
+      // Snapshot the previous value
+      const previousPerms = qc.getQueryData(["permissions", wallet]);
+      
+      // Optimistically update to the new value
+      qc.setQueryData(["permissions", wallet], (old: any) => {
+        if (!old) return old;
+        return old.map((p: any) => 
+          p.permission_key === variables.key 
+            ? { ...p, granted: variables.granted, updated_at: new Date().toISOString() }
+            : p
+        );
+      });
+      
+      return { previousPerms };
     },
-    onError: (e: Error) => toast.error("Update failed", { description: e.message }),
+    onSuccess: async (_, variables) => {
+      toast.success("Permission updated");
+      // Refetch to ensure server state is correct
+      await qc.refetchQueries({ queryKey: ["permissions", wallet] });
+    },
+    onError: (e: Error, variables, context) => {
+      toast.error("Update failed", { description: e.message });
+      // Rollback to previous state on error
+      if (context?.previousPerms) {
+        qc.setQueryData(["permissions", wallet], context.previousPerms);
+      }
+    },
   });
 
   const revokeAllM = useMutation({
