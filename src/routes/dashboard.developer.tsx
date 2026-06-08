@@ -98,9 +98,75 @@ function DeveloperPage() {
 
       <div className="glass-card rounded-xl p-6">
         <div className="flex items-center justify-between mb-4">
+      <div className="glass-card rounded-xl p-6 space-y-4">
+        <div className="flex items-center justify-between flex-wrap gap-2">
+          <h3 className="font-semibold flex items-center gap-2">
+            <Zap className="h-4 w-4 text-primary" /> Terminal 3 SDK
+          </h3>
+          <Badge
+            variant="outline"
+            className="gap-1.5"
+            title={
+              session.data?.mode === "live"
+                ? "TERMINAL3_API_KEY + TERMINAL3_API_BASE_URL are set — credentials are signed by Terminal 3"
+                : "Terminal 3 secrets not set — credentials are signed locally with the same shape"
+            }
+          >
+            <CircleDot
+              className={
+                session.data?.mode === "live"
+                  ? "h-3 w-3 text-success"
+                  : "h-3 w-3 text-muted-foreground"
+              }
+            />
+            Mode · {session.data?.mode ?? "…"}
+          </Badge>
+        </div>
+        <p className="text-sm text-muted-foreground">
+          Thin server-only wrapper around the Terminal 3 Agent Auth API. Used to
+          issue, revoke, and verify W3C verifiable credentials. Falls back to
+          local signing (same payload shape) when env vars are absent.
+        </p>
+        <div className="grid gap-2 text-xs">
+          <SdkRow
+            file="src/lib/terminal3/client.server.ts"
+            note="Core SDK · getT3Mode(), t3Fetch(), sha256Hex(), newCredentialId()"
+          />
+          <SdkRow
+            file="src/lib/terminal3.functions.ts"
+            note="Server fns · issueCredential, revokeCredential, verifyCredential, getT3Session"
+          />
+          <SdkRow file="src/routes/dashboard.credentials.tsx" note="UI · issue/revoke/verify" />
+          <SdkRow file="src/routes/verify.tsx" note="Public verifier page" />
+        </div>
+        <div>
+          <p className="text-xs font-medium mb-2 text-muted-foreground uppercase tracking-wider">
+            Terminal 3 endpoints called
+          </p>
+          <pre className="rounded-lg bg-muted p-3 text-xs font-mono overflow-x-auto leading-relaxed">
+{`POST  {TERMINAL3_API_BASE_URL}/v1/credentials/issue
+POST  {TERMINAL3_API_BASE_URL}/v1/credentials/{id}/revoke
+Headers: Authorization: Bearer {TERMINAL3_API_KEY}
+         X-Terminal3-Project: {TERMINAL3_PROJECT_ID}`}
+          </pre>
+        </div>
+        {session.data?.mode === "local" && (
+          <p className="text-xs text-warning">
+            Running in <strong>local mode</strong>. Add{" "}
+            <code className="font-mono">TERMINAL3_API_KEY</code>,{" "}
+            <code className="font-mono">TERMINAL3_API_BASE_URL</code>, and{" "}
+            <code className="font-mono">TERMINAL3_PROJECT_ID</code> as backend
+            secrets to switch to live Terminal 3 signing.
+          </p>
+        )}
+      </div>
+
+      <div className="glass-card rounded-xl p-6">
+        <div className="flex items-center justify-between mb-4">
           <h3 className="font-semibold flex items-center gap-2">
             <Code2 className="h-4 w-4 text-primary" /> API Keys
           </h3>
+
           <Dialog
             open={open}
             onOpenChange={(o) => {
