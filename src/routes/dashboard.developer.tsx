@@ -7,8 +7,10 @@ import {
   deleteApiKey,
   listApiKeys,
 } from "@/lib/credlayer.functions";
+import { getT3Session } from "@/lib/terminal3.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
   DialogContent,
@@ -18,11 +20,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Code2, Copy, Plus, Trash2, Check } from "lucide-react";
+import { Code2, Copy, Plus, Trash2, Check, CircleDot, Zap, FileCode } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 import { copyToClipboard } from "@/lib/copy";
+
 
 export const Route = createFileRoute("/dashboard/developer")({
   component: DeveloperPage,
