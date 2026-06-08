@@ -96,8 +96,6 @@ function DeveloperPage() {
         <Stat label="Plan" value="Free · 1k req/mo" />
       </div>
 
-      <div className="glass-card rounded-xl p-6">
-        <div className="flex items-center justify-between mb-4">
       <div className="glass-card rounded-xl p-6 space-y-4">
         <div className="flex items-center justify-between flex-wrap gap-2">
           <h3 className="font-semibold flex items-center gap-2">
