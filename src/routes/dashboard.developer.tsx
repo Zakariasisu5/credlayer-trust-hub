@@ -7,8 +7,10 @@ import {
   deleteApiKey,
   listApiKeys,
 } from "@/lib/credlayer.functions";
+import { getT3Session } from "@/lib/terminal3.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
   DialogContent,
@@ -18,11 +20,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Code2, Copy, Plus, Trash2, Check } from "lucide-react";
+import { Code2, Copy, Plus, Trash2, Check, CircleDot, Zap, FileCode } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 import { copyToClipboard } from "@/lib/copy";
+
 
 export const Route = createFileRoute("/dashboard/developer")({
   component: DeveloperPage,
@@ -34,6 +37,7 @@ function DeveloperPage() {
   const list = useServerFn(listApiKeys);
   const create = useServerFn(createApiKey);
   const remove = useServerFn(deleteApiKey);
+  const t3Session = useServerFn(getT3Session);
   const qc = useQueryClient();
 
   const keys = useQuery({
@@ -41,6 +45,14 @@ function DeveloperPage() {
     queryFn: () => list({ data: { wallet } }),
     enabled: !!wallet,
   });
+
+  const session = useQuery({
+    queryKey: ["t3-session", wallet],
+    queryFn: () => t3Session({ data: { wallet } }),
+    enabled: !!wallet,
+    staleTime: 300_000,
+  });
+
 
   const [name, setName] = useState("");
   const [open, setOpen] = useState(false);
@@ -84,11 +96,75 @@ function DeveloperPage() {
         <Stat label="Plan" value="Free · 1k req/mo" />
       </div>
 
+      <div className="glass-card rounded-xl p-6 space-y-4">
+        <div className="flex items-center justify-between flex-wrap gap-2">
+          <h3 className="font-semibold flex items-center gap-2">
+            <Zap className="h-4 w-4 text-primary" /> Terminal 3 SDK
+          </h3>
+          <Badge
+            variant="outline"
+            className="gap-1.5"
+            title={
+              session.data?.mode === "live"
+                ? "TERMINAL3_API_KEY + TERMINAL3_API_BASE_URL are set — credentials are signed by Terminal 3"
+                : "Terminal 3 secrets not set — credentials are signed locally with the same shape"
+            }
+          >
+            <CircleDot
+              className={
+                session.data?.mode === "live"
+                  ? "h-3 w-3 text-success"
+                  : "h-3 w-3 text-muted-foreground"
+              }
+            />
+            Mode · {session.data?.mode ?? "…"}
+          </Badge>
+        </div>
+        <p className="text-sm text-muted-foreground">
+          Thin server-only wrapper around the Terminal 3 Agent Auth API. Used to
+          issue, revoke, and verify W3C verifiable credentials. Falls back to
+          local signing (same payload shape) when env vars are absent.
+        </p>
+        <div className="grid gap-2 text-xs">
+          <SdkRow
+            file="src/lib/terminal3/client.server.ts"
+            note="Core SDK · getT3Mode(), t3Fetch(), sha256Hex(), newCredentialId()"
+          />
+          <SdkRow
+            file="src/lib/terminal3.functions.ts"
+            note="Server fns · issueCredential, revokeCredential, verifyCredential, getT3Session"
+          />
+          <SdkRow file="src/routes/dashboard.credentials.tsx" note="UI · issue/revoke/verify" />
+          <SdkRow file="src/routes/verify.tsx" note="Public verifier page" />
+        </div>
+        <div>
+          <p className="text-xs font-medium mb-2 text-muted-foreground uppercase tracking-wider">
+            Terminal 3 endpoints called
+          </p>
+          <pre className="rounded-lg bg-muted p-3 text-xs font-mono overflow-x-auto leading-relaxed">
+{`POST  {TERMINAL3_API_BASE_URL}/v1/credentials/issue
+POST  {TERMINAL3_API_BASE_URL}/v1/credentials/{id}/revoke
+Headers: Authorization: Bearer {TERMINAL3_API_KEY}
+         X-Terminal3-Project: {TERMINAL3_PROJECT_ID}`}
+          </pre>
+        </div>
+        {session.data?.mode === "local" && (
+          <p className="text-xs text-warning">
+            Running in <strong>local mode</strong>. Add{" "}
+            <code className="font-mono">TERMINAL3_API_KEY</code>,{" "}
+            <code className="font-mono">TERMINAL3_API_BASE_URL</code>, and{" "}
+            <code className="font-mono">TERMINAL3_PROJECT_ID</code> as backend
+            secrets to switch to live Terminal 3 signing.
+          </p>
+        )}
+      </div>
+
       <div className="glass-card rounded-xl p-6">
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-semibold flex items-center gap-2">
             <Code2 className="h-4 w-4 text-primary" /> API Keys
           </h3>
+
           <Dialog
             open={open}
             onOpenChange={(o) => {
@@ -181,6 +257,19 @@ Content-Type: application/json
     </div>
   );
 }
+
+function SdkRow({ file, note }: { file: string; note: string }) {
+  return (
+    <div className="flex items-start justify-between gap-3 rounded-md border border-border/60 bg-muted/30 px-3 py-2">
+      <div className="flex items-center gap-2 min-w-0">
+        <FileCode className="h-3.5 w-3.5 text-primary shrink-0" />
+        <code className="font-mono text-[11px] truncate">{file}</code>
+      </div>
+      <span className="text-[11px] text-muted-foreground text-right">{note}</span>
+    </div>
+  );
+}
+
 
 function Stat({ label, value }: { label: string; value: number | string }) {
   return (
