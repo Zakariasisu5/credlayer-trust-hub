@@ -37,6 +37,7 @@ function DeveloperPage() {
   const list = useServerFn(listApiKeys);
   const create = useServerFn(createApiKey);
   const remove = useServerFn(deleteApiKey);
+  const t3Session = useServerFn(getT3Session);
   const qc = useQueryClient();
 
   const keys = useQuery({
@@ -44,6 +45,14 @@ function DeveloperPage() {
     queryFn: () => list({ data: { wallet } }),
     enabled: !!wallet,
   });
+
+  const session = useQuery({
+    queryKey: ["t3-session", wallet],
+    queryFn: () => t3Session({ data: { wallet } }),
+    enabled: !!wallet,
+    staleTime: 300_000,
+  });
+
 
   const [name, setName] = useState("");
   const [open, setOpen] = useState(false);
