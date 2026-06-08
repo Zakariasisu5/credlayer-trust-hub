@@ -258,6 +258,19 @@ Content-Type: application/json
   );
 }
 
+function SdkRow({ file, note }: { file: string; note: string }) {
+  return (
+    <div className="flex items-start justify-between gap-3 rounded-md border border-border/60 bg-muted/30 px-3 py-2">
+      <div className="flex items-center gap-2 min-w-0">
+        <FileCode className="h-3.5 w-3.5 text-primary shrink-0" />
+        <code className="font-mono text-[11px] truncate">{file}</code>
+      </div>
+      <span className="text-[11px] text-muted-foreground text-right">{note}</span>
+    </div>
+  );
+}
+
+
 function Stat({ label, value }: { label: string; value: number | string }) {
   return (
     <div className="glass-card rounded-xl p-5">
