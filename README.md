@@ -42,7 +42,6 @@ In Web3, **trust is invisible**. A wallet address tells you nothing about whethe
 
 Traditional credit scores don't exist on-chain, and every protocol has to re-invent the wheel — running their own risk analysis on the same public data.
 
----
 
 ## 4. The Solution
 
@@ -55,7 +54,6 @@ CredLayer is a **shared reputation primitive**:
 
 The credential is portable, revocable, and verifiable off-chain — exactly the primitive Terminal 3 was built to provide.
 
----
 
 ## 5. Terminal 3 Integration
 
